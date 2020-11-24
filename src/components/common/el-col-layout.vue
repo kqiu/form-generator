@@ -37,7 +37,7 @@ export default {
   created() {
   },
   updated() {
-    // console.log("updated>>>>>>>>", this.width, this.span)
+    console.log("updated>>>>>>>>", this.width, this.span)
   },
   mounted() {
     this.updateSize();
