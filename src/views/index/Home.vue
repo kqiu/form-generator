@@ -23,6 +23,7 @@
               :clone="cloneComponent"
               draggable=".components-item"
               :sort="false"
+              :disabled="true"
               @end="onEnd"
             >
               <div
@@ -68,7 +69,7 @@
             :disabled="formConf.disabled"
             :label-width="formConf.labelWidth + 'px'"
           >
-            <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
+            <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup" :disabled="draggableFlag">
               <draggable-item
                 v-for="(item, index) in drawingList"
                 :key="item.renderKey"
@@ -80,6 +81,9 @@
                 @activeItem="activeFormItem"
                 @copyItem="drawingItemCopy"
                 @deleteItem="drawingItemDelete"
+                @mousedown.stop="onMouseDown"
+                @click="onClick"
+                @mousemove="onMouseMove"
               />
             </draggable>
             <div v-show="!drawingList.length" class="empty-info">
@@ -148,6 +152,7 @@ import {
   getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
 } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
+import { EventBus } from "./event-bus.js";
 
 let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
@@ -169,6 +174,7 @@ export default {
   },
   data() {
     return {
+      draggableFlag: false,
       logo,
       idGlobal,
       formConf,
@@ -267,8 +273,20 @@ export default {
     clipboard.on('error', e => {
       this.$message.error('代码复制失败')
     })
+    EventBus.$on("before-draggable", this.beforeDraggableHandler);
+    EventBus.$on("after-draggable", this.afterDraggableHandler);
+  },
+  beforeDestroy() {
+    EventBus.$off("before-draggable", this.beforeDraggableHandler, false);
+    EventBus.$off("after-draggable", this.afterDraggableHandler, false);
   },
   methods: {
+    beforeDraggableHandler() {
+      this.draggableFlag = true;
+    },
+    afterDraggableHandler() {
+      this.draggableFlag = false;
+    },
     setObjectValueByStringKeys(obj, strKeys, val) {
       const arr = strKeys.split('.')
       arr.reduce((pre, item, i) => {
@@ -309,6 +327,7 @@ export default {
       }
     },
     activeFormItem(currentItem) {
+      console.log("currentItem>>>", currentItem)
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
     },
@@ -457,6 +476,17 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
+    },
+    onMouseDown() {
+      alert(1)
+      console.log('mousedown>>>')
+    },
+    onMouseMove() {
+      alert(2)
+      console.log('mousemove>>>')
+    },
+    onClick() {
+      alert(3)
     }
   }
 }

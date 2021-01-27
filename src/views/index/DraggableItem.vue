@@ -2,22 +2,24 @@
 import draggable from 'vuedraggable'
 import render from '@/components/render/render'
 import ElColLayout from "@/components/common/el-col-layout.vue";
+import { EventBus } from "./event-bus.js";
 
 const components = {
   itemBtns(h, currentItem, index, list) {
     const { copyItem, deleteItem } = this.$listeners
-    return [
-      <span class="drawing-item-copy" title="复制" onClick={event => {
-        copyItem(currentItem, list); event.stopPropagation()
-      }}>
-        <i class="el-icon-copy-document" />
-      </span>,
-      <span class="drawing-item-delete" title="删除" onClick={event => {
-        deleteItem(index, list); event.stopPropagation()
-      }}>
-        <i class="el-icon-delete" />
-      </span>
-    ]
+    return null;
+    // return [
+    //   <span class="drawing-item-copy" title="复制" onClick={event => {
+    //     copyItem(currentItem, list); event.stopPropagation()
+    //   }}>
+    //     <i class="el-icon-copy-document" />
+    //   </span>,
+    //   <span class="drawing-item-delete" title="删除" onClick={event => {
+    //     deleteItem(index, list); event.stopPropagation()
+    //   }}>
+    //     <i class="el-icon-delete" />
+    //   </span>
+    // ]
   }
 }
 const layouts = {
@@ -38,7 +40,7 @@ const layouts = {
       rowSize = {width: currentItem.__config__.rowWidth, height: currentItem.__config__.rowHeight, left: currentItem.__config__.rowLeft, top: currentItem.__config__.rowTop};
     }
     return (
-      <el-col-layout span={config.span} class={className} type={rowType} size={rowSize} layout={rowLayout}
+      <el-col-layout span={config.span} class={className} type={rowType} size={rowSize} layout={rowLayout} 
         nativeOnClick={event => { activeItem(currentItem); event.stopPropagation() }}>
         <el-form-item label-width={labelWidth}
             label={config.showLabel ? config.label : ''} required={config.required}>
@@ -72,13 +74,14 @@ const layouts = {
     if (rowLayout == 'absolute') {
       rowSize = {width: currentItem.__config__.rowWidth, height: currentItem.__config__.rowHeight, left: currentItem.__config__.rowLeft, top: currentItem.__config__.rowTop};
     }
+    const disabled = this.disabled;
     return (
       <el-col-layout span={config.span} type={rowType} size={rowSize} layout={rowLayout}>
         <el-row gutter={config.gutter} class={className}
             nativeOnClick={event => { activeItem(currentItem); event.stopPropagation() }}>
-            <span class="component-name">{config.componentName}</span>
-            <draggable list={config.children || []} animation={340}
-              group="componentsGroup" class="drag-wrapper">
+            <draggable list={config.children || []} animation={340} disabled={disabled}
+              group="componentsGroup" class="drag-wrapper"
+            >
               {child}
             </draggable>
             {components.itemBtns.apply(this, arguments)}
@@ -126,6 +129,27 @@ export default {
     'activeId',
     'formConf'
   ],
+  mounted() {
+    EventBus.$on("before-draggable", this.beforeDraggableHandler);
+    EventBus.$on("after-draggable", this.afterDraggableHandler);
+  },
+  beforeDestroy() {
+      EventBus.$off("before-draggable", this.beforeDraggableHandler, false);
+      EventBus.$off("after-draggable", this.afterDraggableHandler, false);
+  },
+  methods: {
+    beforeDraggableHandler() {
+      this.disabled = true;
+    },
+    afterDraggableHandler() {
+      this.disabled = false;
+    }
+  },
+  data() {
+    return {
+      disabled: false
+    }
+  },
   render(h) {
     const layout = layouts[this.currentItem.__config__.layout]
 
