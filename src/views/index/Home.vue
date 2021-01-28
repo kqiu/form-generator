@@ -81,9 +81,6 @@
                 @activeItem="activeFormItem"
                 @copyItem="drawingItemCopy"
                 @deleteItem="drawingItemDelete"
-                @mousedown.stop="onMouseDown"
-                @click="onClick"
-                @mousemove="onMouseMove"
               />
             </draggable>
             <div v-show="!drawingList.length" class="empty-info">
@@ -476,17 +473,6 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
-    },
-    onMouseDown() {
-      alert(1)
-      console.log('mousedown>>>')
-    },
-    onMouseMove() {
-      alert(2)
-      console.log('mousemove>>>')
-    },
-    onClick() {
-      alert(3)
     }
   }
 }

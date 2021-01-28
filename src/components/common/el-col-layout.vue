@@ -82,15 +82,13 @@ export default {
             selectedDom.style.zIndex = globalZIndex++;
             //给需要移动的元素添加onmousedown事件
             selectedDom.onmousedown = function (ev) {
-              var event = window.event || ev;
+              let event = window.event || ev;
               // 获取屏幕中可视化的宽高的坐标
-              var dx = event.clientX - selectedDom.offsetLeft; 
-              var dy = event.clientY - selectedDom.offsetTop;
-              // console.log(event);
-              // console.log(dy)
+              let dx = event.clientX - selectedDom.offsetLeft; 
+              let dy = event.clientY - selectedDom.offsetTop;
               //实时改变目标元素odiv的位置
               document.onmousemove = function (ev) {
-                  var event = window.event || ev;
+                  let event = window.event || ev;
                   selectedDom.style.left = event.clientX - dx + 'px';
                   selectedDom.style.top = event.clientY - dy + 'px';
               }
