@@ -6,7 +6,7 @@ Element UI表单设计及代码生成器，可将生成的代码直接运行在�
 - [配套vscode插件](https://github.com/JakHuang/form-generator-plugin)
 - [配套JSON解析器](https://github.com/JakHuang/form-generator/blob/dev/src/components/parser/example/Index.vue)
 
-## 友情链接
+## 友情链接 1
 
 - **vue-admin-beautiful** —— [企业级、通用型中后台前端解决方案（基于vue/cli 4 最新版，同时支持电脑，手机，平板）](https://github.com/chuzhixin/vue-admin-beautiful)
 - **vue-admin-beautiful** —— [在线演示](http://beautiful.panm.cn/vue-admin-beautiful/#/index)
